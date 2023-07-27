@@ -1,25 +1,25 @@
 ---
-title: "Get User"
-api: "GET https://api.mintlify.com/api/user"
-description: "This endpoint gets or creates a new user."
+title: "Create Chat"
+api: "POST https://llamaapi.fly.dev/api/chat"
+description: "This endpoint gets or creates a new chat."
 ---
 
-### Body
+### Request Body
 
-<ParamField body="name" type="string">
+<ParamField body="messages" type="object">
   This is the name of the user group.
 </ParamField>
 
-<ParamField body="user_group_id" type="string">
+<ParamField body="functions" type="object">
   This is the ID you use to identify this user group in your database.
 </ParamField>
 
-<ParamField body="mapping" type="object">
+<ParamField body="stream" type="boolean">
   This is a JSON mapping of schema id to either the data source that this user group should be
   associated with or id of the datasource you provided when creating it.
 </ParamField>
 
-<ParamField body="properties" type="object">
+<ParamField body="function_call" type="string">
   This is a JSON object for properties assigned to this user group. These will be accessible through
   variables in the dashboards and SQL editor
 </ParamField>
@@ -99,3 +99,4 @@ curl --location --request GET 'https://api.mintlify.com/api/user' \
 ```
 
 </ResponseExample>
+

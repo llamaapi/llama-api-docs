@@ -20,8 +20,7 @@
     }
   },
   "modeToggle": {
-    "default": "light",
-    "isHidden": true
+    "default": "light"
   }
 , 
   "topbarLinks": [
@@ -61,7 +60,7 @@
     {
       "group": "Endpoint Examples",
       "pages": [
-        "api-reference/endpoint/get"
+        "api-reference/endpoint/create"
       ]
     }
   ],
