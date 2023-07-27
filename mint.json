@@ -8,7 +8,7 @@
  
   "favicon": "/favicon.png",
   "colors": {
-    "primary": "#9563FF",
+    "primary": "#2AB673",
     "light": "#AE87FF",
     "dark": "#0D001D",
     "background": {
@@ -53,10 +53,7 @@
       "group": "Get Started",
       "pages": ["introduction", "quickstart", "development"]
     },
-    {
-      "group": "Essentials",
-      "pages": ["essentials/markdown", "essentials/code", "essentials/images", "essentials/settings", "essentials/navigation"]
-    },
+
     {
       "group": "API Documentation",
       "pages": ["api-reference/authentication"]

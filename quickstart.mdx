@@ -1,86 +1,89 @@
 ---
 title: 'Quickstart'
-description: 'Start building awesome documentation in under 5 minutes'
+description: 'Start building awesome A.I Projects with LlamaAPI'
 ---
 
-## Setup your development
+# Llama API Client
 
-Learn how to update your docs locally and and deploy them to the public.
+LlamaAPI is a Python SDK for interacting with the Llama API. It abstracts away the handling of aiohttp sessions and headers, allowing for a simplified interaction with the API.
 
-### Edit and preview
+## Installation
 
-<AccordionGroup>
-  <Accordion icon="github" title="Clone your docs locally">
-    During the onboarding process, we created a repository on your Github with
-    your docs content. You can find this repository on our
-    [dashboard](https://dashboard.mintlify.com). To clone the repository
-    locally, follow these
-    [instructions](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
-    in your terminal.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Preview changes">
-    Previewing helps you make sure your changes look as intended. We built a
-    command line interface to render these changes locally. 1. Install the
-    [Mintlify CLI](https://www.npmjs.com/package/mintlify) to preview the
-    documentation changes locally with this command: ``` npm i -g mintlify ```
-    2. Run the following command at the root of your documentation (where
-    `mint.json` is): ``` mintlify dev ```
-  </Accordion>
-</AccordionGroup>
+You can install the LlamaAPI SDK using pip:
 
-### Deploy your changes
+```python
+pip install llamaapi
+```
 
-<AccordionGroup>
+## Usage
 
-<Accordion icon="message-bot" title="Install our Github app">
-  Our Github app automatically deploys your changes to your docs site, so you
-  don't need to manage deployments yourself. You can find the link to install on
-  your [dashboard](https://dashboard.mintlify.com). Once the bot has been
-  successfully installed, there should be a check mark next to the commit hash
-  of the repo.
-</Accordion>
-<Accordion icon="rocket" title="Push your changes">
-  [Commit and push your changes to
-  Git](https://docs.github.com/en/get-started/using-git/pushing-commits-to-a-remote-repository#about-git-push)
-  for your changes to update in your docs site. If you push and don't see that
-  the Github app successfully deployed your changes, you can also manually
-  update your docs through our [dashboard](https://dashboard.mintlify.com).
-</Accordion>
+After installing the SDK, you can use it in your Python projects like so:
 
-</AccordionGroup>
+```python
+import json
+from llamaapi import LlamaAPI
 
-## Update your docs
+# Initialize the llamaapi with your api_token
+llama = LlamaAPI("<your_api_token>")
 
-Add content directly in your files with MDX syntax and React components. You can use any of our components, or even build your own.
+# Define your API request
+api_request_json = {
+    "messages": [
+        {"role": "user", "content": "What is the weather like in Boston?"},
+    ],
+    "functions": [
+        {
+            "name": "get_current_weather",
+            "description": "Get the current weather in a given location",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "location": {
+                        "type": "string",
+                        "description": "The city and state, e.g. San Francisco, CA",
+                    },
+                    "days": {
+                        "type": "number",
+                        "description": "for how many days ahead you wants the forecast",
+                    },
+                    "unit": {"type": "string", "enum": ["celsius", "fahrenheit"]},
+                },
+            },
+            "required": ["location", "days"],
+        }
+    ],
+    "stream": False,
+    "function_call": "get_current_weather",
+}
 
-<CardGroup>
+# Make your request and handle the response
+response = llama.run(api_request_json)
+print(json.dumps(response.json(), indent=2))
+```
 
-<Card title="Style Your Docs" icon="paintbrush" href="/settings/global">
-  Add flair to your docs with personalized branding.
-</Card>
+Other parameters that you can pass in the request json is:
 
-<Card
-  title="Add API Endpoints"
-  icon="square-code"
-  href="/api-playground/configuration"
->
-  Implement your OpenAPI spec and enable API user interaction.
-</Card>
+```
+{
+  ...
+  "max_length" = 500,
+  "temperature"= 0.1,
+  "top_p"= 1.0,
+  "frequency_penalty"=1.0
+  ...
+}
+```
 
-<Card
-  title="Integrate Analytics"
-  icon="chart-mixed"
-  href="/analytics/supported-integrations"
->
-  Draw insights from user interactions with your documentation.
-</Card>
+Note: Stream is still not working, so it is recommended to submit with `stream: False`.
 
-<Card
-  title="Host on a Custom Domain"
-  icon="browser"
-  href="/settings/custom-domain/subdomain"
->
-  Keep your docs on your own website's subdomain.
-</Card>
+## Change Log
 
-</CardGroup>
+Version 0.1: Initial release
+
+## Contributing
+
+We welcome contributions to this project. Please see the Contributing Guidelines for more details.
+
+## License
+
+llamaapi SDK is licensed under the MIT License. Please see the License File for more details.
