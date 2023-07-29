@@ -6,61 +6,97 @@ description: "This endpoint gets or creates a new chat."
 
 ### Request Body
 
+
 <ParamField body="messages" type="object">
-  This is the name of the user group.
+    This parameter represents a collection of messages that form the ongoing conversation.
 </ParamField>
 
 <ParamField body="functions" type="object">
-  This is the ID you use to identify this user group in your database.
+    This parameter contains a list of functions for which the model can generate JSON inputs.
 </ParamField>
-
 <ParamField body="stream" type="boolean">
-  This is a JSON mapping of schema id to either the data source that this user group should be
-  associated with or id of the datasource you provided when creating it.
+    When this option is enabled, the model will send partial message updates, similar to ChatGPT. Tokens will be transmitted as data-only server-sent events as they become available, and the streaming will conclude with a data: [DONE] marker.
 </ParamField>
-
 <ParamField body="function_call" type="string">
-  This is a JSON object for properties assigned to this user group. These will be accessible through
-  variables in the dashboards and SQL editor
+    This parameter governs the model's response to function calls. Choosing "none" indicates that the model will not invoke any functions and will respond directly to the end-user.
 </ParamField>
 
 ### Response
 
-<ResponseField name="success" type="number">
-  Indicates whether the call was successful. 1 if successful, 0 if not.
+<ResponseField name="choices" type="array">
+
+<Expandable title="Toggle array">
+
+<ResponseField name="index" type="number"> 
+
+0
+
 </ResponseField>
 
-<ResponseField name="new_user_group" type="boolean">
-  Indicates whether a new user group was created.
-</ResponseField>
-
-<ResponseField name="user_group" type="object">
-
-The contents of the user group
+<ResponseField name="message" type="object">
 
 <Expandable title="Toggle object">
 
-<ResponseField name="team_id" type="number">
-  This is the internal ID for this user group. You don't need to record this information, since
-  you will not need to use it.
+<ResponseField name="role" type="string">
+
+assistant
+
 </ResponseField>
 
-<ResponseField name="token" type="string">
-  This is the user group token (userGroupToken or USER_GROUP_TOKEN) that will be used to identify
-  which user group is viewing the dashboard. You should save this on your end to use when rendering
-  an embedded dashboard.
+<ResponseField name="content" type="null">
+
+null
+
 </ResponseField>
+
+<ResponseField name="function_call" type="object">
+
+<Expandable title="Toggle object">
 
 <ResponseField name="name" type="string">
-  This is the name of the user group provided in the request body.
+
+get_current_weather
+
+</ResponseField>  
+
+<ResponseField name="arguments" type="object">
+
+<Expandable title="Toggle object">
+
+<ResponseField name="location" type="string">
+
+Boston
+
 </ResponseField>
 
-<ResponseField name="provided_id" type="string">
-  This is the user_group_id provided in the request body.
+<ResponseField name="days" type="number">
+
+5
+
 </ResponseField>
 
-<ResponseField name="properties" type="JSON or null">
-  This is the properties object if it was provided in the request body
+<ResponseField name="unit" type="string"> 
+
+celsius
+
+</ResponseField>
+
+</Expandable>
+
+</ResponseField>
+
+</Expandable>  
+
+</ResponseField>
+
+</Expandable>
+
+</ResponseField>  
+
+<ResponseField name="finish_reason" type="string">
+
+function_call
+
 </ResponseField>
 
 </Expandable>
