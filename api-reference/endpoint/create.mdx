@@ -108,7 +108,7 @@ function_call
 ```bash Example Request
 curl --location --request POST 'https://llamaapi.fly.dev/api/chat' \
 --header 'Content-Type: application/json' \
---header 'Authorization: Token <token>' \
+--header 'Authorization: Bearer <token>' \
 --data-raw '{
     "messages": [
         {"role": "user", "content": "What is the weather like in Boston?"},
