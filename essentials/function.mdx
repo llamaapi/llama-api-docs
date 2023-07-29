@@ -4,13 +4,13 @@ description: "Example overview page before API endpoints"
 ---
 
 
-The latest ChatGPT models can dynamically call functions you define based on user input. You specify functions in the API request like `get_weather()` or `send_email()`. The model will intelligently choose when to call a function and return JSON matching the function signature. 
+OpenAI introduced function calling in their latest ChatGPT models. But the open-source models were unable to call functions until the most recent or finetuned models. You specify functions in the API request like `information_extraction()` or `send_email()`. The model will intelligently choose when to call a function and return JSON matching the function schema.
 
 This allows creating chatbots that leverage external APIs, converting natural language queries to API calls, and extracting structured data - all by defining functions for the model to potentially invoke. 
 
-The model doesn't actually execute the function - it just returns JSON you can use to call it yourself. You need to parse the JSON, validate it, and call your function as needed. There are risks if functions impact the real world, so build in confirmations before taking actions on a user's behalf.
+The model returns a JSON you can use to call the function yourself. You need to parse the JSON, validate it, and call your function as needed. There are risks if functions impact the real world actions, so build in validation before taking any actions with the returned arguments, especially on a user's behalf.
 
-Functions count against the model's token limit and context size, so optimize them if you hit limits. The overall flow is:
+More details and the overall flow can be found on [OpenAI's functions release](https://openai.com/blog/function-calling-and-other-api-updates) and is summarized below:
 
 1. Send query and function definitions to the model
 
@@ -19,5 +19,3 @@ Functions count against the model's token limit and context size, so optimize th
 3. Parse and validate JSON in your code, call real function if valid
 
 4. Send function result back to model to summarize for user
-
-In summary, you can get reliable structured data by defining functions for the model to potentially call. It returns the JSON to execute the functions yourself server-side.
