@@ -25,12 +25,12 @@
 , 
   "topbarLinks": [
     {
-      "name": "Support",
-      "url": "mailto:hi@mintlify.com"
+      "name": "Community",
+      "url": "https://discord.gg/sxcd9hfbkJ"
     }
   ],
   "topbarCtaButton": {
-    "name": "Dashboard",
+    "name": "Get Started",
     "url": "https://www.llama-api.com/"
   },
   "tabs": [
