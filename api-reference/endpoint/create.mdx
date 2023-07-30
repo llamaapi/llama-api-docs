@@ -106,7 +106,7 @@ function_call
 
 <RequestExample>
 
-```bash Example Request
+```bash Curl Request
 curl --location --request POST 'https://llamaapi.fly.dev/api/chat' \
 --header 'Content-Type: application/json' \
 --header 'Authorization: Bearer <token>' \
@@ -139,39 +139,7 @@ curl --location --request POST 'https://llamaapi.fly.dev/api/chat' \
     "function_call": "get_current_weather",
 }'
 ```
-
-</RequestExample>
-
-<ResponseExample>
-
-```json Response
-{
-  "choices": [
-    {
-      "index": 0, 
-      "message": {
-        "role": "assistant", 
-        "content": null, 
-        "function_call": {
-          "name": "get_current_weather", 
-          "arguments": {
-            "location": "Boston", 
-            "days": 5, 
-            "unit": "celsius"
-          }
-        }
-      },
-      "finish_reason": "function_call"
-    }
-  ]
-}
-
-```
-
-</ResponseExample>
-
-# Using the Python client
-```python llama.py
+```python Python
 import json
 from llamaapi import LlamaAPI
 
@@ -212,3 +180,35 @@ api_request_json = {
 response = llama.run(api_request_json)
 print(json.dumps(response.json(), indent=2))
 ```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Response
+{
+  "choices": [
+    {
+      "index": 0, 
+      "message": {
+        "role": "assistant", 
+        "content": null, 
+        "function_call": {
+          "name": "get_current_weather", 
+          "arguments": {
+            "location": "Boston", 
+            "days": 5, 
+            "unit": "celsius"
+          }
+        }
+      },
+      "finish_reason": "function_call"
+    }
+  ]
+}
+
+```
+
+</ResponseExample>
+
+
