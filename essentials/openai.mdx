@@ -1,0 +1,148 @@
+---
+title: "OpenAI Function Calling"
+description: "Examples of OpenAI function calls"
+---
+
+## Introduction:
+
+This functionality truly opens up endless possibilities for applications of Large Scale Language Models (LLMs).
+
+- ChatGPT generates natural text, but it can be inconsistent. By returning functions, the output becomes more controlled and predictable.
+- The feature can extract structured data from the text (prompt) and assign it as arguments to a chosen function.
+- Developers have the ability to create their own functions, connecting LLMs to internal and external APIs and databases, allowing the model to decide which function to use and which arguments to pass.
+- Non-technical users can interact with LLMs to obtain data without needing to understand the underlying functions and required arguments.
+
+## Examples of Created Functions:
+
+- Example 1: Function `get_flight_info`
+
+  - Description: Get flight information between two locations.
+  - Parameters: `loc_origin` (departure airport), `loc_destination` (destination airport).
+  - Usage Example: User inquires about the next flight from Amsterdam to New York.
+
+  ```python
+  # API Request JSON Cell
+  api_request_json = {
+    'model': 'llama-13b-chat',
+    'functions': [
+        {
+            "name": "get_flight_info",
+            "description": "Get flight information between two locations",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "loc_origin": {
+                        "type": "string",
+                        "description": "The departure airport, e.g. DUS"
+                    },
+                    "loc_destination": {
+                        "type": "string",
+                        "description": "The destination airport, e.g. HAM"
+                    }
+                },
+            "required": ["loc_origin", "loc_destination"]
+            }
+        }
+    ],
+    'function_call': {'name': 'get_flight_info'},
+    'messages': [
+        {'role': 'user', 'content': "When's the next flight from Amsterdam to New York?"}],
+  }
+
+  # Run llama
+
+  response = llama.run(api_request_json)
+  print(response.json())
+
+  ```
+
+  Expected return:
+
+```json
+{
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": null,
+        "function_call": {
+          "name": "get_flight_info",
+          "arguments": {
+            "loc_origin": "Amsterdam",
+            "loc_destination": "New York"
+          }
+        }
+      },
+      "finish_reason": "function_call"
+    }
+  ]
+}
+```
+
+- Exemplo 2: Função `Person`
+  - Description: Identify information about a person.
+  - Parameters: `name` (person's name), `age` (person's age), `fav_food` (favorite food).
+  - Usage Example: User provides information about John, and the function returns a JSON object.
+
+```python
+# API Request JSON Cell
+api_request_json = {
+    'model': 'llama-13b-chat',
+    'functions': [
+        {
+            "name": "Person", ## Function name referenced in function_call
+            "description": "Identifying information about a person.", ## Function description
+            "parameters": {
+                "type": "object",
+                "properties": { ## Structure of the properties you expect to return as an object
+                    "name": {"title": "Name", "description": "The person's name", "type": "string"},
+                    "age": {"title": "Age", "description": "The person's age", "type": "integer"},
+                    "fav_food": {
+                        "title": "Fav Food",
+                        "description": "The person's favorite food",
+                        "type": "string",
+                    },
+                },
+            "required": ["name", "age"]
+            }
+        }
+    ],
+    'function_call': {'name': 'Person'}, ## Pass your function
+    'messages': [
+        {'role': 'user', 'content': "John is 23 years old. He likes to eat pizza."}],
+  }
+
+# Run llama
+response = llama.run(api_request_json)
+print(response.json())
+```
+
+Expected return:
+
+```json
+{
+  "name": "Person",
+  "arguments": { "name": "John", "age": 23, "fav_food": "pizza" }
+}
+```
+
+### Request API Execution Flow:
+
+- API request JSON structure, highlighting:
+  - Model used (llama-13b-chat). See other models in this [link](/quickstart#list-of-models-default-llama-13b-chat)
+  - List of available functions.
+  - Specific function call [(`function_call`)](/essentials/function).
+  - User messages.
+
+## Possibilities and Applications:
+
+- More deterministic control: Comparison between natural text output and structured output through functions.
+- Structured data extraction: Using the resource to extract specific information from text.
+- Development of custom functions: Connect the model to external APIs, databases, and internal tools.
+
+## Potential Extensions and Future Explorations:
+
+- Integrate personal assistants into IoT devices.
+- Add recurring reminders and to-do list features.
+- Explore more complex interactions, such as online booking transactions.
