@@ -1,24 +1,161 @@
 ---
 title: "Function Calling"
-description: "Example overview page before API endpoints"
+description: "TL;DR; of AI Function Calling"
 ---
+# Function Calling
+> :warning: It is known that, sometimes, AI models return incorrect results. With function calls, this means that there's a risks that wrong functions calls have real-world impact. Double your attention when working with functions that do more than just reading/fetching data.
 
+LLMs return unstructed data which is hard to use in applications other than chat. By invoking functions,
+you can make LLMs return structured data which can be used to interact with other systems. In practice, this means
+that the model will return a JSON instead of Natural Text, which can be parsed and passed as arguments to functions
+in your code. With this, LLM functions enable traditional use-cases such as rendering Web Pages, strucuring Mobile 
+Application View Models, saving data to Database columns, passing it to API calls, among infinite other use cases.
 
-OpenAI introduced function calling in their latest ChatGPT models. But the open-source models were unable to call functions until the most recent or finetuned models. You specify functions in the API request like `information_extraction()` or `send_email()`. The model will intelligently choose when to call a function and return JSON matching the function schema.
+OpenAI introduced Function Calling in their latest GPT Models, but open-source models did not get that feature
+until recently. LlamaAPI allows you to seamlessly call functions (such as `query_database()` or `send_email()`) 
+from different LLMs, standardizing their outputs.
 
-This allows creating chatbots that leverage external APIs, converting natural language queries to API calls, and extracting structured data - all by defining functions for the model to potentially invoke. 
+## Use Cases
+From a code perspective, function calling allows for:
+- More deterministic control: Transform natural text into a structured output through functions.
+- Structured data extraction: Using the resource to extract specific information from text.
+- Development of custom functions: Connect the model to external APIs, databases, and internal tools.
 
-The model returns a JSON you can use to call the function yourself. You need to parse the JSON, validate it, and call your function as needed. There are risks if functions impact the real world actions, so build in validation before taking any actions with the returned arguments, especially on a user's behalf.
+From a product perspective you could:
+- Integrate Personal Assistants into IoT devices.
+- Add recurring reminders and to-do list features.
+- Explore more complex interactions, such as online booking transactions.
 
-More details and the overall flow can be found on [OpenAI's functions release](https://openai.com/blog/function-calling-and-other-api-updates) and is summarized below:
+## Recommended Flow
 
 1. Send query and function definitions to the model
+2. Model returns JSON adhering to function schema (if it chooses to call one)
+3. Parse the JSON
+4. Validate it
+5. Call the function
+6. Send function result back to model to summarize for user
 
-2. Model returns JSON adhering to function schema if it chooses to call one 
+> To learn more about Function Calling and how it works, see [this OpenAI blog post](https://openai.com/blog/function-calling-and-other-api-updates).
 
-3. Parse and validate JSON in your code, call real function if valid
+## Examples
+As you will see on the following examples, an API Request must contain the following:
+- Model used (eg. `llama-13b-chat`). See other models in this [link](/quickstart#available-models)
+- List of available functions.
+- Function calls [(`function_call`)](/essentials/function).
+- User messages.
 
-4. Send function result back to model to summarize for user
+### Example 1: `get_flight_info`
+- Objective: Get flight information between two locations.
+- Parameters: `loc_origin` (departure airport), `loc_destination` (destination airport).
+- Usage Example: User inquires about the next flight from Amsterdam to New York.
 
+#### Request
+```python
+# Build the Request
+api_request_json = {
+  'model': 'llama-13b-chat',
+  'functions': [
+      {
+          "name": "get_flight_info",
+          "description": "Get flight information between two locations",
+          "parameters": {
+              "type": "object",
+              "properties": {
+                  "loc_origin": {
+                      "type": "string",
+                      "description": "The departure airport, e.g. DUS"
+                  },
+                  "loc_destination": {
+                      "type": "string",
+                      "description": "The destination airport, e.g. HAM"
+                  }
+              },
+          "required": ["loc_origin", "loc_destination"]
+          }
+      }
+  ],
+  'function_call': {'name': 'get_flight_info'},
+  'messages': [
+      {'role': 'user', 'content': "When's the next flight from Amsterdam to New York?"}],
+}
 
-For tips and help on how to use functions join our [Discord community](https://discord.gg/sxcd9hfbkJ).
+# Execute the Request
+
+response = llama.run(api_request_json)
+print(response.json())
+```
+
+#### Expected Response
+```json
+{
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": null,
+        "function_call": {
+          "name": "get_flight_info",
+          "arguments": {
+            "loc_origin": "Amsterdam",
+            "loc_destination": "New York"
+          }
+        }
+      },
+      "finish_reason": "function_call"
+    }
+  ]
+}
+```
+
+### Example 2: `Person`
+- Objective: Identify information about a person.
+- Parameters: `name` (person's name), `age` (person's age), `fav_food` (favorite food).
+- Usage Example: User provides information about John, and the function returns a JSON object.
+
+#### Request
+```python
+# Build the Request
+api_request_json = {
+    'model': 'llama-13b-chat',
+    'functions': [
+        {
+            "name": "Person", ## Function name referenced in function_call
+            "description": "Identifying information about a person.", ## Function description
+            "parameters": {
+                "type": "object",
+                "properties": { ## Structure of the properties you expect to return as an object
+                    "name": {"title": "Name", "description": "The person's name", "type": "string"},
+                    "age": {"title": "Age", "description": "The person's age", "type": "integer"},
+                    "fav_food": {
+                        "title": "Fav Food",
+                        "description": "The person's favorite food",
+                        "type": "string",
+                    },
+                },
+            "required": ["name", "age"]
+            }
+        }
+    ],
+    'function_call': {'name': 'Person'}, ## Pass your function
+    'messages': [
+        {'role': 'user', 'content': "John is 23 years old. He likes to eat pizza."}],
+  }
+
+# Execute the Request
+response = llama.run(api_request_json)
+print(response.json())
+```
+
+#### Expected Response
+
+```json
+{
+  "name": "Person",
+  "arguments": { "name": "John", "age": 23, "fav_food": "pizza" }
+}
+```
+
+## Discord
+Don't forget to Join our [Discord community](https://discord.gg/sxcd9hfbkJ)!
+There, you'll find tips, use-cases, help, and an opportunity to collaborate with our staff and users.
