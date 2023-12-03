@@ -47,23 +47,15 @@
   "navigation": [
     {
       "group": "Get Started",
-      "pages": [
-        "quickstart"
-      ]
+      "pages": ["quickstart", "api-token"]
     },
     {
       "group": "Endpoint Examples",
-      "pages": [
-        "api-reference/endpoint/create"
-      ]
+      "pages": ["api-reference/endpoint/create"]
     },
     {
       "group": "Essentials",
-      "pages": [
-        "essentials/chat",
-        "essentials/function",
-        "essentials/openai"
-      ]
+      "pages": ["essentials/chat", "essentials/function", "essentials/openai"]
     }
   ],
   "footerSocials": {
