@@ -37,41 +37,33 @@ print(response.choices[0].message.content)
 ```python Python - Old
 # This example is the old way to use the OpenAI lib for python
 
-import json
-from llamaapi import LlamaAPI
+import openai
 
-llama = LlamaAPI("<your_openai_api_key>")
+openai.api_base = "https://api.llama-api.com"
 
-api_request_json = {
-    "messages": [{"role": "user", "content": "What is the weather like in Boston?"},],
-    "functions": [
-        {
-            "name": "get_current_weather",
-            "description": "Get the current weather in a given location",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "location": {
-                        "type": "string",
-                        "description": "The city and state, e.g. San Francisco, CA",
-                    },
-                    "days": {
-                        "type": "number",
-                        "description": "for how many days ahead you wants the forecast",
-                    },
-                    "unit": {"type": "string", "enum": ["celsius", "fahrenheit"]},
-                },
-            },
-            "required": ["location", "days"],
+openai.api_key = "LL-2vE"  # supply your API key however you choose
+
+functions = [
+        {'name': 'information_extraction',
+         'description': 'Extracts the relevant information from the passage.',
+         'parameters': {
+             'type': 'object',
+             'properties': {
+                 'sentiment': {'title': 'sentiment', 'type': 'string', 'description': 'the sentiment encountered in the passage'},
+                 'aggressiveness': {'title': 'aggressiveness', 'type': 'integer', 'description': 'a 0-10 score of how aggressive the passage is'},
+                 'language': {'title': 'language', 'type': 'string', 'description': 'the language of the passage'},
+             }, 'required': []
+         }
         }
-    ],
-    "stream": False,
-    "function_call": "get_current_weather",
-}
+    ]
 
-# Make your request and handle the response
-response = llama.run(api_request_json)
-print(json.dumps(response.json(), indent=2))
+completion = openai.ChatCompletion.create(model="llama-13b-chat",
+        messages=[{"role": "user", "content": "Extract the desired information from the following passage.:\n\nI love you, but not so much!"}],
+        functions=functions,
+        function_call = {"name": "information_extraction"}
+        )
+
+print(completion)
 ````
 
 </CodeGroup>
