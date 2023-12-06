@@ -4,22 +4,27 @@ api: "POST https://api.llama-api.com/chat/completions"
 description: "This endpoint gets or creates a new chat."
 ---
 
-
 ### Request Body
 
-
 <ParamField body="messages" type="object">
-    This parameter represents a collection of messages that form the ongoing conversation.
+  This parameter represents a collection of messages that form the ongoing
+  conversation.
 </ParamField>
 
 <ParamField body="functions" type="object">
-    This parameter contains a list of functions for which the model can generate JSON inputs.
+  This parameter contains a list of functions for which the model can generate
+  JSON inputs.
 </ParamField>
 <ParamField body="stream" type="boolean">
-    When this option is enabled, the model will send partial message updates, similar to ChatGPT. Tokens will be transmitted as data-only server-sent events as they become available, and the streaming will conclude with a data: [DONE] marker.
+  When this option is enabled, the model will send partial message updates,
+  similar to ChatGPT. Tokens will be transmitted as data-only server-sent events
+  as they become available, and the streaming will conclude with a data: [DONE]
+  marker.
 </ParamField>
 <ParamField body="function_call" type="string">
-    This parameter governs the model's response to function calls. Choosing "none" indicates that the model will not invoke any functions and will respond directly to the end-user.
+  This parameter governs the model's response to function calls. Choosing "none"
+  indicates that the model will not invoke any functions and will respond
+  directly to the end-user.
 </ParamField>
 
 ### Response
@@ -28,7 +33,7 @@ description: "This endpoint gets or creates a new chat."
 
 <Expandable title="Toggle array">
 
-<ResponseField name="index" type="number"> 
+<ResponseField name="index" type="number">
 
 0
 
@@ -58,7 +63,7 @@ null
 
 get_current_weather
 
-</ResponseField>  
+</ResponseField>
 
 <ResponseField name="arguments" type="object">
 
@@ -76,7 +81,7 @@ Boston
 
 </ResponseField>
 
-<ResponseField name="unit" type="string"> 
+<ResponseField name="unit" type="string">
 
 celsius
 
@@ -86,13 +91,13 @@ celsius
 
 </ResponseField>
 
-</Expandable>  
+</Expandable>
 
 </ResponseField>
 
 </Expandable>
 
-</ResponseField>  
+</ResponseField>
 
 <ResponseField name="finish_reason" type="string">
 
@@ -139,6 +144,7 @@ curl --location --request POST 'https://api.llama-api.com/chat/completions' \
     "function_call": "get_current_weather",
 }'
 ```
+
 ```python Python
 import json
 from llamaapi import LlamaAPI
@@ -181,6 +187,49 @@ response = llama.run(api_request_json)
 print(json.dumps(response.json(), indent=2))
 ```
 
+```javascript JavaScript
+import LlamaAI from "llamaai";
+
+const apiToken = "INSERT_YOUR_API_TOKEN_HERE";
+const llamaAPI = new LlamaAI(apiToken);
+
+const apiRequestJson = {
+  messages: [{ role: "user", content: "What is the weather like in Boston?" }],
+  functions: [
+    {
+      name: "get_current_weather",
+      description: "Get the current weather in a given location",
+      parameters: {
+        type: "object",
+        properties: {
+          location: {
+            type: "string",
+            description: "The city and state, e.g. San Francisco, CA",
+          },
+          days: {
+            type: "number",
+            description: "for how many days ahead you wants the forecast",
+          },
+          unit: { type: "string", enum: ["celsius", "fahrenheit"] },
+        },
+      },
+      required: ["location", "days"],
+    },
+  ],
+  stream: false,
+  function_call: "get_current_weather",
+};
+
+llamaAPI
+  .run(apiRequestJson)
+  .then((response) => {
+    // Process response
+  })
+  .catch((error) => {
+    // Handle errors
+  });
+```
+
 </RequestExample>
 
 <ResponseExample>
@@ -189,15 +238,15 @@ print(json.dumps(response.json(), indent=2))
 {
   "choices": [
     {
-      "index": 0, 
+      "index": 0,
       "message": {
-        "role": "assistant", 
-        "content": null, 
+        "role": "assistant",
+        "content": null,
         "function_call": {
-          "name": "get_current_weather", 
+          "name": "get_current_weather",
           "arguments": {
-            "location": "Boston", 
-            "days": 5, 
+            "location": "Boston",
+            "days": 5,
             "unit": "celsius"
           }
         }
@@ -206,9 +255,6 @@ print(json.dumps(response.json(), indent=2))
     }
   ]
 }
-
 ```
 
 </ResponseExample>
-
-

@@ -2,26 +2,38 @@
 title: "Function Calling"
 description: "TL;DR; of AI Function Calling"
 ---
-# Function Calling
-> :warning: It is known that, sometimes, AI models return incorrect results. With function calls, this means that there's a risks that wrong functions calls have real-world impact. Double your attention when working with functions that do more than just reading/fetching data.
 
-LLMs return unstructed data which is hard to use in applications other than chat. By invoking functions,
-you can make LLMs return structured data which can be used to interact with other systems. In practice, this means
-that the model will return a JSON instead of Natural Text, which can be parsed and passed as arguments to functions
-in your code. With this, LLM functions enable traditional use-cases such as rendering Web Pages, strucuring Mobile 
-Application View Models, saving data to Database columns, passing it to API calls, among infinite other use cases.
+# Function Calling
+
+<Info>
+  It is known that, sometimes, AI models return incorrect results. With function
+  calls, this means that there's a risks that wrong functions calls have
+  real-world impact. Double your attention when working with functions that do
+  more than just reading/fetching data.
+</Info>
+
+LLMs return unstructed data which is hard to use in applications other than chat.
+By invoking functions, you can make LLMs return structured data which can be used
+to interact with other systems. In practice, this means that the model will return
+a JSON instead of Natural Text, which can be parsed and passed as arguments to functions
+in your code. With this, LLM functions enable traditional use-cases such as rendering
+Web Pages, strucuring Mobile Application View Models, saving data to Database columns,
+passing it to API calls, among infinite other use cases.
 
 OpenAI introduced Function Calling in their latest GPT Models, but open-source models did not get that feature
-until recently. LlamaAPI allows you to seamlessly call functions (such as `query_database()` or `send_email()`) 
+until recently. LlamaAPI allows you to seamlessly call functions (such as `query_database()` or `send_email()`)
 from different LLMs, standardizing their outputs.
 
 ## Use Cases
+
 From a code perspective, function calling allows for:
+
 - More deterministic control: Transform natural text into a structured output through functions.
 - Structured data extraction: Using the resource to extract specific information from text.
 - Development of custom functions: Connect the model to external APIs, databases, and internal tools.
 
 From a product perspective you could:
+
 - Integrate Personal Assistants into IoT devices.
 - Add recurring reminders and to-do list features.
 - Explore more complex interactions, such as online booking transactions.
@@ -38,18 +50,22 @@ From a product perspective you could:
 > To learn more about Function Calling and how it works, see [this OpenAI blog post](https://openai.com/blog/function-calling-and-other-api-updates).
 
 ## Examples
+
 As you will see on the following examples, an API Request must contain the following:
+
 - Model used (eg. `llama-13b-chat`). See other models in this [link](/quickstart#available-models)
 - List of available functions.
 - Function calls [(`function_call`)](/essentials/function).
 - User messages.
 
 ### Example 1: `get_flight_info`
+
 - Objective: Get flight information between two locations.
 - Parameters: `loc_origin` (departure airport), `loc_destination` (destination airport).
 - Usage Example: User inquires about the next flight from Amsterdam to New York.
 
 #### Request
+
 ```python
 # Build the Request
 api_request_json = {
@@ -86,6 +102,7 @@ print(response.json())
 ```
 
 #### Expected Response
+
 ```json
 {
   "choices": [
@@ -109,11 +126,13 @@ print(response.json())
 ```
 
 ### Example 2: `Person`
+
 - Objective: Identify information about a person.
 - Parameters: `name` (person's name), `age` (person's age), `fav_food` (favorite food).
 - Usage Example: User provides information about John, and the function returns a JSON object.
 
 #### Request
+
 ```python
 # Build the Request
 api_request_json = {
@@ -157,5 +176,6 @@ print(response.json())
 ```
 
 ## Discord
+
 Don't forget to Join our [Discord community](https://discord.gg/sxcd9hfbkJ)!
 There, you'll find tips, use-cases, help, and an opportunity to collaborate with our staff and users.
