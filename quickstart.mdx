@@ -1,0 +1,173 @@
+---
+title: 'Quickstart'
+description: 'Start building awesome AI Projects with LlamaAPI'
+---
+
+# Quickstart
+In this guide you will find the essential commands for interacting with LlamaAPI, but don't forget
+to check the rest of our documentation to extract the full power of our API.
+
+## Available Models
+The following models are currently available through LlamaAPI. You will use their names when build a request
+further on this Quickstart Guide.
+
+- `llama-7b-chat`
+- `llama-13b-chat`
+- `llama-70b-chat`
+- `mistral-7b`
+- `mistral-7b-instruct`
+- `NousResearch/Nous-Hermes-Llama2-13b`
+- `falcon-7b-instruct`
+- `falcon-40b-instruct`
+- `alpaca-7b`
+- `codellama-7b-instruct`
+- `codellama-13b-instruct`
+- `codellama-34b-instruct`
+- `openassistant-llama2-70b`
+- `vicuna-7b`
+- `vicuna-13b`
+- `vicuna-13b-16k`
+
+## Installing the SDK
+Our SDK allows your application to interact with LlamaAPI seamlessly, abstracting the handling
+of `aiohttp` sessions and headers, allowing for a simplified interaction with LlamaAPI.
+
+### Python
+```python
+pip install llamaapi
+```
+
+### Javascript
+```bash
+npm install llamaai
+```
+
+## Usage
+Once you have installed our library, you can follow the examples in this section to build
+powerfull applications, interacting with different models and making them invoke custom functions
+to enchance the user experience.
+
+### Python
+```python
+import json
+from llamaapi import LlamaAPI
+
+# Initialize the SDK
+llama = LlamaAPI("<your_api_token>")
+
+# Build the API request
+api_request_json = {
+    "messages": [
+        {"role": "user", "content": "What is the weather like in Boston?"},
+    ],
+    "functions": [
+        {
+            "name": "get_current_weather",
+            "description": "Get the current weather in a given location",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "location": {
+                        "type": "string",
+                        "description": "The city and state, e.g. San Francisco, CA",
+                    },
+                    "days": {
+                        "type": "number",
+                        "description": "for how many days ahead you wants the forecast",
+                    },
+                    "unit": {"type": "string", "enum": ["celsius", "fahrenheit"]},
+                },
+            },
+            "required": ["location", "days"],
+        }
+    ],
+    "stream": False,
+    "function_call": "get_current_weather",
+}
+
+# Execute the Request
+response = llama.run(api_request_json)
+print(json.dumps(response.json(), indent=2))
+```
+
+Other parameters that you can pass in the request json are:
+
+```
+{
+  ...
+  "max_length" = 500,
+  "temperature"= 0.1,
+  "top_p"= 1.0,
+  "frequency_penalty"=1.0
+  ...
+}
+```
+
+### Javascript
+1. Import the Library:
+
+   ```javascript
+   import LlamaAI from 'llamaai';
+   ```
+
+2. Initialize the Library:
+
+   ```javascript
+   const apiToken = 'INSERT_YOUR_API_TOKEN_HERE';
+   const llamaAPI = new LlamaAI(apiToken);
+   ```
+
+3. Make a Request
+
+   ```javascript
+   // Build the Request
+   const apiRequestJson = {
+      "messages": [
+          {"role": "user", "content": "What is the weather like in Boston?"},
+      ],
+      "functions": [
+          {
+              "name": "get_current_weather",
+              "description": "Get the current weather in a given location",
+              "parameters": {
+                  "type": "object",
+                  "properties": {
+                      "location": {
+                          "type": "string",
+                          "description": "The city and state, e.g. San Francisco, CA",
+                      },
+                      "days": {
+                          "type": "number",
+                          "description": "for how many days ahead you wants the forecast",
+                      },
+                      "unit": {"type": "string", "enum": ["celsius", "fahrenheit"]},
+                  },
+              },
+              "required": ["location", "days"],
+          }
+      ],
+      "stream": false,
+      "function_call": "get_current_weather",
+     };
+   
+     // Execute the Request
+      llamaAPI.run(apiRequestJson)
+        .then(response => {
+          // Process response
+        })
+        .catch(error => {
+          // Handle errors
+        });
+   ```
+
+## Change Log
+
+Version 0.1: Initial release
+
+## Contributing
+
+We welcome contributions to this project. Please see the Contributing Guidelines for more details.
+
+## License
+
+Llamaapi SDK is licensed under the MIT License. Please see the License File for more details.

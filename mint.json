@@ -1,0 +1,75 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "Llama API",
+  "logo": {
+    "dark": "/logo/dark.png",
+    "light": "/logo/light.png"
+  },
+  "favicon": "/favicon.png",
+  "colors": {
+    "primary": "#2AB673",
+    "light": "#AE87FF",
+    "dark": "#0D001D",
+    "background": {
+      "light": "#f7f7f5"
+    },
+    "anchors": {
+      "from": "#FF7F57",
+      "to": "#9563FF"
+    }
+  },
+  "modeToggle": {
+    "default": "light"
+  },
+  "topbarLinks": [
+    {
+      "name": "Community",
+      "url": "https://discord.gg/sxcd9hfbkJ"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Get Started",
+    "url": "https://www.llama-api.com/"
+  },
+  "tabs": [
+    {
+      "name": "API Reference",
+      "url": "api-reference"
+    }
+  ],
+  "anchors": [
+    {
+      "name": "Community",
+      "icon": "discord",
+      "url": "https://discord.gg/sxcd9hfbkJ"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Get Started",
+      "pages": [
+        "quickstart",
+        "api-token"
+      ]
+    },
+    {
+      "group": "Endpoint Examples",
+      "pages": [
+        "api-reference/endpoint/create"
+      ]
+    },
+    {
+      "group": "Essentials",
+      "pages": [
+        "essentials/chat",
+        "essentials/function",
+        "essentials/plugnplai"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "twitter": "https://twitter.com/mintlify",
+    "github": "https://github.com/llamaapi/",
+    "linkedin": "https://www.linkedin.com/company/mintsearch"
+  }
+}
