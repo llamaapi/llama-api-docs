@@ -1,0 +1,90 @@
+---
+title: "Plug and Plai"
+description: "Library aiming to simplify the integration of AI plugins"
+---
+
+Plug and Plai is an open source library aiming to simplify the integration of AI plugins into open-source language models (LLMs).
+
+It provides utility functions to get a list of active plugins from [plugnplai](plugnplai.com) directory, get plugin manifests, and extract OpenAPI specifications and load plugins.
+
+<Tip>
+  Visit the [plugnplai](plugnplai.com) website or the
+  [repository](https://github.com/edreisMD/plugnplai) for more information on
+  using the library.
+</Tip>
+
+## Integration with llama
+
+You can install Plug and Plai using pip:
+
+```bash
+pip install plugnplai
+```
+
+In the example, we will search for a weather plugin.
+
+1. Use plugnplai library to load plugins from the database: https://plugnplai.com
+2. Let's choose weather plugin
+3. Install the plugin using Plugins.install_and_activate
+4. Get an array of the functions schemas using the built in function plugins.functions
+
+```python plugnplai
+import plugnplai as pl
+
+allurls = pl.get_plugins()
+
+urls = [url for url in allurls if ("weather" in url)]
+print("URLs: ",urls)
+
+plugins = pl.Plugins.install_and_activate(urls[3])
+print("Function: ",plugins.functions)
+```
+
+```json Response
+URLs:  ["https://weather--vicentescode.repl.co", "https://openai-plugin.xweather.com", "https://weather.mixerbox.com", "https://weathergpt-bay-six.vercel.app"]
+Function:  [{"name": "WeatherWizard_checkWeatherUsingGET", "description": "Use the WeatherWizard plugin to automatically fetch current weather information for a specific location when it"s being generated. The plugin will return weather data, including temperature, wind speed, humidity, and other relevant information, as well as a link to a page that has all the information. Links will always be returned and should be shown to the user. The weather data can be used to provide users with up-to-date and accurate weather information for their desired location.", "parameters": {"type": "object", "properties": {"location": {"type": "string", "description": "Location for which to retrieve weather information."}}, "required": ["location"]}}]
+```
+
+Now let's run llama with the new functions
+
+```python Llama API
+import json
+from llamaapi import LlamaAPI
+
+llama = LlamaAPI("LL-gNBmB2TzW4GpCW1YrHZOKO5u4O0Nq7FTUo3a9Jx8EJwEu7mJsmoPZuKEk7nGTHeN")
+
+api_request_json = {
+  "messages": [
+    {"role": "user", "content": "How is the weather in New York?"},
+  ],
+  "functions": plugins.functions,
+  "stream": False,
+  "function_call": "force",
+  "max_tokens": 800
+}
+
+# Make your request and handle the response
+response = llama.run(api_request_json)
+print(json.dumps(response.json(), indent=2))
+```
+
+```json Response
+{
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": null,
+        "function_call": {
+          "name": "WeatherWizard_checkWeatherUsingGET",
+          "arguments": {
+            "location": "New York"
+          }
+        }
+      },
+      "finish_reason": "function_call"
+    }
+  ]
+}
+```
