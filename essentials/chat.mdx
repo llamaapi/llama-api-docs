@@ -3,9 +3,40 @@ title: "Using the OpenAI Client"
 description: "Example overview page before API endpoints"
 ---
 
+<Info>
+  A complete rewrite of the library recently took place, a lot of things have
+  changed. Developers recommend immediate update. For more information access:
+  [Migration Guide](https://github.com/openai/openai-python/discussions/742)
+</Info>
 This example shows how to use the Openai client with LlamaAPI
 
-```python
+<CodeGroup>
+```python Python - New
+# This example is the new way to use the OpenAI lib for python
+from openai import OpenAI
+
+client = OpenAI(
+api_key = "<your_openai_api_key>",
+base_url = "https://api.llama-api.com"
+)
+
+    response = client.chat.completions.create(
+    model="llama-13b-chat",
+    messages=[
+        {"role": "system", "content": "Assistant is a large language model trained by OpenAI."},
+        {"role": "user", "content": "Who were the founders of Microsoft?"}
+    ]
+
+)
+
+#print(response)
+print(response.model_dump_json(indent=2))
+print(response.choices[0].message.content)
+
+````
+```python Python - Old
+# This example is the old way to use the OpenAI lib for python
+
 import openai
 
 openai.api_base = "https://api.llama-api.com"
@@ -13,24 +44,26 @@ openai.api_base = "https://api.llama-api.com"
 openai.api_key = "LL-2vE"  # supply your API key however you choose
 
 functions = [
-        {'name': 'information_extraction', 
-         'description': 'Extracts the relevant information from the passage.', 
+        {'name': 'information_extraction',
+         'description': 'Extracts the relevant information from the passage.',
          'parameters': {
-             'type': 'object', 
+             'type': 'object',
              'properties': {
-                 'sentiment': {'title': 'sentiment', 'type': 'string', 'description': 'the sentiment encountered in the passage'}, 
-                 'aggressiveness': {'title': 'aggressiveness', 'type': 'integer', 'description': 'a 0-10 score of how aggressive the passage is'}, 
+                 'sentiment': {'title': 'sentiment', 'type': 'string', 'description': 'the sentiment encountered in the passage'},
+                 'aggressiveness': {'title': 'aggressiveness', 'type': 'integer', 'description': 'a 0-10 score of how aggressive the passage is'},
                  'language': {'title': 'language', 'type': 'string', 'description': 'the language of the passage'},
              }, 'required': []
          }
         }
     ]
 
-completion = openai.ChatCompletion.create(model="llama-13b-chat", 
-                                          messages=[{"role": "user", "content": "Extract the desired information from the following passage.:\n\nI love you, but not so much!"}], 
-                                          functions=functions,
-                                          function_call = {"name": "information_extraction"}
-                                          )
+completion = openai.ChatCompletion.create(model="llama-13b-chat",
+        messages=[{"role": "user", "content": "Extract the desired information from the following passage.:\n\nI love you, but not so much!"}],
+        functions=functions,
+        function_call = {"name": "information_extraction"}
+        )
 
 print(completion)
-```
+````
+
+</CodeGroup>

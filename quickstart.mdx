@@ -1,15 +1,36 @@
 ---
 title: 'Quickstart'
-description: 'Start building awesome A.I Projects with LlamaAPI'
+description: 'Start building awesome AI Projects with LlamaAPI'
 ---
 
-# Llama API Client
+# Quickstart
+In this guide you will find the essential commands for interacting with LlamaAPI, but don't forget
+to check the rest of our documentation to extract the full power of our API.
 
-LlamaAPI is a Python SDK for interacting with the Llama API. It abstracts away the handling of aiohttp sessions and headers, allowing for a simplified interaction with the API.
+## Available Models
+The following models are currently available through LlamaAPI. You will use their names when build a request
+further on this Quickstart Guide.
 
-## Installation
+- `llama-7b-chat`
+- `llama-13b-chat`
+- `llama-70b-chat`
+- `mistral-7b`
+- `mistral-7b-instruct`
+- `NousResearch/Nous-Hermes-Llama2-13b`
+- `falcon-7b-instruct`
+- `falcon-40b-instruct`
+- `alpaca-7b`
+- `codellama-7b-instruct`
+- `codellama-13b-instruct`
+- `codellama-34b-instruct`
+- `openassistant-llama2-70b`
+- `vicuna-7b`
+- `vicuna-13b`
+- `vicuna-13b-16k`
 
-You can install the LlamaAPI SDK using pip:
+## Installing the SDK
+Our SDK allows your application to interact with LlamaAPI seamlessly, abstracting the handling
+of `aiohttp` sessions and headers, allowing for a simplified interaction with LlamaAPI.
 
 ### Python
 ```python
@@ -22,18 +43,19 @@ npm install llamaai
 ```
 
 ## Usage
+Once you have installed our library, you can follow the examples in this section to build
+powerfull applications, interacting with different models and making them invoke custom functions
+to enchance the user experience.
 
 ### Python
-After installing the SDK, you can use it in your Python projects like so:
-
 ```python
 import json
 from llamaapi import LlamaAPI
 
-# Initialize the llamaapi with your api_token
+# Initialize the SDK
 llama = LlamaAPI("<your_api_token>")
 
-# Define your API request
+# Build the API request
 api_request_json = {
     "messages": [
         {"role": "user", "content": "What is the weather like in Boston?"},
@@ -63,12 +85,12 @@ api_request_json = {
     "function_call": "get_current_weather",
 }
 
-# Make your request and handle the response
+# Execute the Request
 response = llama.run(api_request_json)
 print(json.dumps(response.json(), indent=2))
 ```
 
-Other parameters that you can pass in the request json is:
+Other parameters that you can pass in the request json are:
 
 ```
 {
@@ -82,28 +104,23 @@ Other parameters that you can pass in the request json is:
 ```
 
 ### Javascript
-To Install the library via npm for nodejs:
-
-   ```bash
-   npm install llamaai
-   ```
-
-2. Bring the library into your project:
+1. Import the Library:
 
    ```javascript
    import LlamaAI from 'llamaai';
    ```
 
-3. Instantiate the LlamaAPI class, providing your API token:
+2. Initialize the Library:
 
    ```javascript
    const apiToken = 'INSERT_YOUR_API_TOKEN_HERE';
    const llamaAPI = new LlamaAI(apiToken);
    ```
 
-4. Execute API requests using the `run` method:
+3. Make a Request
 
    ```javascript
+   // Build the Request
    const apiRequestJson = {
       "messages": [
           {"role": "user", "content": "What is the weather like in Boston?"},
@@ -133,36 +150,15 @@ To Install the library via npm for nodejs:
       "function_call": "get_current_weather",
      };
    
-   
+     // Execute the Request
       llamaAPI.run(apiRequestJson)
         .then(response => {
-          // Process the API response here
+          // Process response
         })
         .catch(error => {
-          // Handle any errors here
+          // Handle errors
         });
    ```
-
-## List of models (default: llama-13b-chat):
-
-```
-llama-7b-chat
-llama-13b-chat
-llama-70b-chat
-mistral-7b
-mistral-7b-instruct
-NousResearch/Nous-Hermes-Llama2-13b
-falcon-7b-instruct
-falcon-40b-instruct
-alpaca-7b
-codellama-7b-instruct
-codellama-13b-instruct
-codellama-34b-instruct
-openassistant-llama2-70b
-vicuna-7b
-vicuna-13b
-vicuna-13b-16k
-```
 
 ## Change Log
 

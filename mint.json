@@ -5,7 +5,6 @@
     "dark": "/logo/dark.png",
     "light": "/logo/light.png"
   },
- 
   "favicon": "/favicon.png",
   "colors": {
     "primary": "#2AB673",
@@ -21,8 +20,7 @@
   },
   "modeToggle": {
     "default": "light"
-  }
-, 
+  },
   "topbarLinks": [
     {
       "name": "Community",
@@ -40,7 +38,6 @@
     }
   ],
   "anchors": [
-
     {
       "name": "Community",
       "icon": "discord",
@@ -50,20 +47,24 @@
   "navigation": [
     {
       "group": "Get Started",
-      "pages": ["quickstart"]
+      "pages": [
+        "quickstart",
+        "api-token"
+      ]
     },
-
-
     {
       "group": "Endpoint Examples",
       "pages": [
         "api-reference/endpoint/create"
       ]
     },
-    
     {
       "group": "Essentials",
-      "pages": ["essentials/chat", "essentials/function"] 
+      "pages": [
+        "essentials/chat",
+        "essentials/function",
+        "essentials/plugnplai"
+      ]
     }
   ],
   "footerSocials": {
