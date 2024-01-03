@@ -96,33 +96,71 @@ api_request_json = {
 }
 
 # Execute the Request
-
 response = llama.run(api_request_json)
-print(response.json())
+# Save the answer
+output = response.json()['choices'][0]['message']
 ```
 
 #### Expected Response
 
 ```json
 {
-  "choices": [
-    {
-      "index": 0,
-      "message": {
-        "role": "assistant",
-        "content": null,
-        "function_call": {
-          "name": "get_flight_info",
-          "arguments": {
-            "loc_origin": "Amsterdam",
-            "loc_destination": "New York"
-          }
-        }
-      },
-      "finish_reason": "function_call"
+  "role": "assistant",
+  "content": null,
+  "function_call": {
+    "name": "get_flight_info",
+    "arguments": {
+      "loc_origin": "Amsterdam",
+      "loc_destination": "New York"
     }
-  ]
+  }
 }
+```
+
+#### Flight information method
+
+Now we will create a method that will return information according to the extraction of information provided by the user.
+
+```python
+  def get_flight_info(loc_origin, loc_destination):
+    flight_info = {
+    "loc_origin": loc_origin,
+    "loc_destination": loc_destination,
+    "datetime": str(datetime.now() + timedelta(hours=2)),
+    "airline": "KLM",
+    "flight_number": "KL 123",
+    }
+
+    return json.dumps(flight_info)
+
+  arguments = output['function_call']['arguments']
+  origin = arguments.get('loc_origin', None)
+  destination = arguments.get('loc_destination', None)
+
+  ## Call the method
+  flight_info = get_flight_info(origin, destination)
+```
+
+Send the response back to the model to summarize
+
+```python
+  second_api_request_json = {
+    "model": "llama-70b-chat",
+    "messages": [
+      {"role": "user", "content": users_promt},
+      {"role": "function", "name": output['function_call']['name'], "content": flight_info}
+    ],
+    "functions": function_description,
+  }
+
+  second_request = llama.run(second_api_request_json)
+  print(second.json()['choices'][0]['message']['content'])
+```
+
+Expected reponse
+
+```json
+The next flight from Amsterdam to New York is on January 3rd, 2024 at 18:03:17.927497 with KLM airline, flight number KL 123.
 ```
 
 ### Example 2: `Person`
