@@ -369,6 +369,10 @@ api_request_json = {
 response = llama.run(api_request_json)
 output = response.json()['choices'][0]['message']
 ```
+### Response
+```
+{'role': 'assistant', 'content': None, 'function_call': {'name': 'get_email_resume', 'arguments': {'value': 1, 'login': 'login', 'password': 'password'}}}
+```
 
 So, after extracting the information, we need to access the email sent, for this it will be necessary to use a function to read and retrieve the desired emails
 
@@ -407,11 +411,16 @@ def get_emails(quantity, login, password):
     except Exception as e:
         print("Err:", str(e))
 ```
+### Response
+```
+[{"Subject": "Llama", "From": "LlamaAPI <llama@llama.com>"}]
+```
+
 So, we send the emails to a new function that will summarize
 
 ```python
 summarizedResponse = {
-  "model": "codellama-7b-instruct",
+  "model": "llama-70b-chat",
   "messages": [
     {"role": "user", "content": "Make a summary of my emails"},
     {"role": "function", "name": output['function_call']['name'], "content": email_info}
@@ -436,6 +445,10 @@ summarizedResponse = {
 
 summarizedResponse = llama.run(summarizedResponse)
 print(summarizedResponse.json()['choices'][0]['message']['content'])
+```
+### Response
+```
+You have 1 email with the subject "Llama" and the sender "LlamaAPI <llama@llama.com>".
 ```
 
 ## Discord
