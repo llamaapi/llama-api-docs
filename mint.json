@@ -63,7 +63,8 @@
       "pages": [
         "essentials/chat",
         "essentials/function",
-        "essentials/plugnplai"
+        "essentials/plugnplai",
+        "essentials/tutorial"
       ]
     }
   ],
