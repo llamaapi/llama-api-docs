@@ -1,17 +1,19 @@
 ### Example 1: Email Summary
 For this example we will use gmail as an email service
 - Objective: Create a summary of your e-mails
-- Parameter: `value` (desired quantity of e-mails), `login` (your e-mail), `password` (your e-mail password)
+- Parameter: `value` (desired quantity of e-mails), `login` (your e-mail)
 - Usage Example: User provides a location and receive local weather information
 
 ### Request
 Firstly, you need to create a password for less secure apps by following the link: https://support.google.com/a/answer/6260879?hl=en.
 With the password created, we can make the first request to extract the email, password and number of emails that will be summarized.
+
+Let's store this password in a variable, separate from the instruction for LLM
 ```python
 api_request_json = {
   "model": "llama-70b-chat",
   "messages": [
-    {"role": "user", "content": "Make a summary of my last e-mail, login: mail@mail.com and password: password"},
+    {"role": "user", "content": "Make a summary of my last e-mail, login: mail@mail.com"},
   ],
   "functions": [
     {
@@ -27,13 +29,9 @@ api_request_json = {
             "login": {
                 "type": "string",
                 "description": "login"
-            },
-            "password":{
-                "type": "string",
-                "description": "password"
             }
         },
-        "required": ["value","login","password"]
+        "required": ["value","login"]
         }
     },
     'function_call': {'name': 'get_email_summary'},
@@ -50,7 +48,7 @@ In the example above we have some fields defined in the json, such as Model, fun
 In the function defined within functions, we have the fields:
 - Name: Which defines the name of the function
 - Description: Where we provide a function description for the model
-- Parameters: Where we define which parameters we want to extract from the function. Still within parameters, we define that it will be of type object and will have three properties, two of type string, login and password, and value of type integer
+- Parameters: Where we define which parameters we want to extract from the function. Still within parameters, we define that it will be of type object and will have three properties, one of type string, login, and value of type integer
 - Required: Which of the parameters are mandatory
 
 ```python
@@ -59,7 +57,7 @@ output = response.json()['choices'][0]['message']
 ```
 ### Response
 ```
-{'role': 'assistant', 'content': None, 'function_call': {'name': 'get_email_summary', 'arguments': {'value': 1, 'login': 'mail@mail.com', 'password': 'password'}}}
+{'role': 'assistant', 'content': None, 'function_call': {'name': 'get_email_summary', 'arguments': {'value': 1, 'login': 'mail@mail.com'}}}
 ```
 
 ### Processing extracted data
@@ -149,7 +147,7 @@ In this second example we will create an event on the calendar, its operation is
 api_request_json = {
   "model": "llama-70b-chat",
   "messages": [
-    {"role": "user", "content": "Send a invite to mail@mail.com, from: llama@mail.com and password: password, Schedule a meeting on 01/18/2024, starting at 18 and ending at 19. With the title Sales Preview, description Meeting with marketing time to evaluate the semester"},
+    {"role": "user", "content": "Send a invite to mail@mail.com, from: llama@mail.com, Schedule a meeting on 01/18/2024, starting at 18 and ending at 19. With the title Sales Preview, description Meeting with marketing time to evaluate the semester"},
   ],
   "functions": [
     {
@@ -165,10 +163,6 @@ api_request_json = {
             "sender": {
                 "type": "string",
                 "description": "Mail from"
-            },
-            "password":{
-                "type": "string",
-                "description": "password"
             },
             "startAt":{
                 "type":"datetime",
@@ -189,7 +183,7 @@ api_request_json = {
                 "description": "Meeting description"
             }
         },
-        "required": ["receiver","sender","password","day","startAt", "endAt", "title", "description"]
+        "required": ["receiver","sender","day","startAt", "endAt", "title", "description"]
         }
     }
   ],
@@ -205,7 +199,7 @@ As in the first example, Llama does not access your email, so we extract the nec
 ### Data extraction result
 
 ```json
-{'role': 'assistant', 'content': None, 'function_call': {'name': 'schedule_meeting', 'arguments': '{"receiver": "mail@mail.com", "sender": "llama@mail.com", "password": "password", "startAt": "2024-01-18 18:00:00", "endAt": "2024-01-18 19:00:00", "title": "Sales Preview", "description": "Meeting with marketing time to evaluate the semester"}'}}
+{'role': 'assistant', 'content': None, 'function_call': {'name': 'schedule_meeting', 'arguments': '{"receiver": "mail@mail.com", "sender": "llama@mail.com", "startAt": "2024-01-18 18:00:00", "endAt": "2024-01-18 19:00:00", "title": "Sales Preview", "description": "Meeting with marketing time to evaluate the semester"}'}}
 ```
 
 Once we extract the information, we can move it to the function that will be responsible for accessing the email and sending the invitation.
