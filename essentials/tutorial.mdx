@@ -1,0 +1,270 @@
+### Example 1: `get_email_summary`
+For this example we will use gmail as an email service
+- Objective: Create a summary of your e-mails
+- Parameter: `value` (desired quantity of e-mails), `login` (your e-mail), `password` (your e-mail password)
+- Usage Example: User provides a location and receive local weather information
+
+### Request
+Firstly, you need to create a password for less secure apps by following the link: https://support.google.com/a/answer/6260879?hl=en.
+With the password created, we can make the first request to extract the email, password and number of emails that will be summarized.
+```python
+api_request_json = {
+  "model": "llama-70b-chat",
+  "messages": [
+    {"role": "user", "content": "Make a summary of my last e-mail, login: mail@mail.com and password: nnmy fvbx sucz gxdu"},
+  ],
+  "functions": [
+    {
+        "name": "get_email_summary",
+        "description": "Get the current value of emails",
+        "parameters": {
+            "type": "object",
+        "properties": {
+            "value": {
+                "type": "integer",
+                "description": "Quantity of emails"
+            },
+            "login": {
+                "type": "string",
+                "description": "login"
+            },
+            "password":{
+                "type": "string",
+                "description": "password"
+            }
+        },
+        "required": ["value","login","password"]
+        }
+    },
+    'function_call': {'name': 'get_email_summary'},
+  ],
+}
+```
+
+In the example above we have some fields defined in the json, such as Model, functions, function_call and messages.
+- Model: Models are responsible for interpreting and generating natural language or code for their function.
+- Functions: Field where you can define one or more functions that will be responsible for generating the desired result.
+- Function_call: Field responsible for calling the desired function.
+- Messages: Return from processing
+
+In the function defined within functions, we have the fields:
+- Name: Which defines the name of the function
+- Description: Where we provide a function description for the model
+- Parameters: Where we define which parameters we want to extract from the function. Still within parameters, we define that it will be of type object and will have three properties, two of type string, login and password, and value of type integer
+- Required: Which of the parameters are mandatory
+
+```python
+response = llama.run(api_request_json)
+output = response.json()['choices'][0]['message']
+```
+### Response
+```
+{'role': 'assistant', 'content': None, 'function_call': {'name': 'get_email_summary', 'arguments': {'value': 1, 'login': 'login', 'password': 'password'}}}
+```
+
+### Processing extracted data
+So, after extracting the information, we need to access the email sent, for this it will be necessary to use a function to read and retrieve the desired emails
+
+Since the Llama cannot access your emails, it is necessary to build a function that can access and read your emails. To do this, you need the password for less secure apps, in the case of g-mail.
+
+```python
+email_information = []
+def get_emails(quantity, login, password):
+    try:
+        mail = imaplib.IMAP4_SSL("imap.gmail.com")
+        mail.login(login, password)
+        mail.select("inbox")
+
+        status, messages = mail.search(None, "(UNSEEN)")
+
+        email_ids = messages[0].split()[::-1]
+
+        limit = min(quantity, len(email_ids))
+
+        for i in range(limit):
+            email_id = email_ids[i]
+            _, msg_data = mail.fetch(email_id, "(RFC822)")
+            for response_part in msg_data:
+                if isinstance(response_part, tuple):
+                    email_message = email.message_from_bytes(response_part[1])
+                    subject, encoding = decode_header(email_message["Subject"])[0]
+                    if isinstance(subject, bytes):
+                        subject = subject.decode(encoding or "utf-8")
+
+                    sender = email_message.get("From")
+
+            email_information.append({"Subject": subject, "From": sender})
+                    
+
+        mail.logout()
+        return json.dumps(email_information)
+    except Exception as e:
+        print("Err:", str(e))
+```
+### Email reading result
+```
+[{"Subject": "Llama", "From": "LlamaAPI <llama@llama.com>"}]
+```
+
+With the email in hand, we send it again to Llamma, this way it can be interpreted by the model, thus generating the response requested in the function, in example: a summary of the email
+
+```python
+summarizedResponse = {
+  "model": "llama-70b-chat",
+  "messages": [
+    {"role": "user", "content": "Make a summary of my emails"},
+    {"role": "function", "name": output['function_call']['name'], "content": email_info}
+  ],
+  "functions": [
+    {
+        "name": "get_email_summary",
+        "description": "Make a summary of my emails",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "value": {
+                    "type": "integer",
+                    "description": "Quantity of emails"
+                },
+            },
+            "required": ["value"]
+        }
+    }
+],
+}
+
+summarizedResponse = llama.run(summarizedResponse)
+print(summarizedResponse.json()['choices'][0]['message']['content'])
+```
+### Response
+```
+You have 1 email with the subject "Llama" and the sender "LlamaAPI <llama@llama.com>".
+```
+
+### Example 2: Event on the calendar
+
+In this second example we will create an event on the calendar, its operation is very similar to the example above.
+
+```python
+api_request_json = {
+  "model": "llama-70b-chat",
+  "messages": [
+    {"role": "user", "content": "Send a invite to mail@mail.com, from: llama@mail.com and password: password, Schedule a meeting on 01/18/2024, starting at 18 and ending at 19. With the title Sales Preview, description Meeting with marketing time to evaluate the semester"},
+  ],
+  "functions": [
+    {
+        "name": "schedule_meeting",
+        "description": "Schedule a meeting",
+        "parameters": {
+            "type": "object",
+        "properties": {
+            "receiver": {
+                "type": "string",
+                "description": "Mail to"
+            },
+            "sender": {
+                "type": "string",
+                "description": "Mail from"
+            },
+            "password":{
+                "type": "string",
+                "description": "password"
+            },
+            "startAt":{
+                "type":"datetime",
+                "format":"date",
+                "description": "Meeting date in dd-mm-yyyy hh:mm:ss format (e.g 13-02-2024 12:22:00)"
+            },
+            "endAt":{
+                "type":"datetime",
+                "format":"date",
+                "description": "Meeting date in dd-mm-yyyy hh:mm:ss format (e.g 13-02-2024 12:22:00)"
+            },
+            "title":{
+                "type": "string",
+                "description": "Meeting Title"
+            },
+            "description":{
+                "type": "string",
+                "description": "Meeting description"
+            }
+        },
+        "required": ["receiver","sender","password","day","startAt", "endAt", "title", "description"]
+        }
+    }
+  ],
+}
+
+# Run llama
+response = llama.run(api_request_json)
+output = response.json()['choices'][0]['message']
+```
+
+As in the first example, Llama does not access your email, so we extract the necessary information to be able to send it
+
+### Data extraction result
+
+```json
+{'role': 'assistant', 'content': None, 'function_call': {'name': 'schedule_meeting', 'arguments': '{"receiver": "mail@mail.com", "sender": "llama@mail.com", "password": "password", "startAt": "2024-01-18 18:00:00", "endAt": "2024-01-18 19:00:00", "title": "Sales Preview", "description": "Meeting with marketing time to evaluate the semester"}'}}
+```
+
+Once we extract the information, we can move it to the function that will be responsible for accessing the email and sending the invitation.
+
+```python
+def createEvent(event_summary, event_description, start_time, end_time):
+    event = Event()
+    event.add('summary', event_summary)
+    event.add('description', event_description)
+    event.add('dtstart', start_time)
+    event.add('dtend', end_time)
+    return event
+
+def createCalendar(event):
+    cal = Calendar()
+    cal.add('prodid', '-//Calendar')
+    cal.add('version', '2.0')
+    cal.add_component(event)
+    return cal
+
+event = createEvent(event_summary, event_description, start_time, end_time)
+cal = createCalendar(event)
+
+ics_filename = 'event.ics'
+with open(ics_filename, 'wb') as ics_file:
+    ics_file.write(cal.to_ical())
+
+sender_email = sender
+receiver_email = receiver
+subject = description
+
+def createMailMessage(sender_email, receiver_email, subject):
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = receiver_email
+    msg['Subject'] = subject
+    return msg
+
+msg = createMailMessage(sender, receiver, subject)
+
+body = description
+msg.attach(MIMEText(body, 'plain'))
+
+with open(ics_filename, 'rb') as attachment:
+    part = MIMEApplication(attachment.read(), Name=ics_filename)
+    part['Content-Disposition'] = f'attachment; filename={ics_filename}'
+    msg.attach(part)
+
+smtp_server = 'smtp.gmail.com'
+smtp_port = 587
+smtp_username = sender
+smtp_password = password
+
+with smtplib.SMTP(smtp_server, smtp_port) as server:
+    server.starttls()
+    server.login(smtp_username, smtp_password)
+    server.sendmail(sender, to, msg.as_string())
+
+print('Email successfully sent!')
+```
+
+In the example above we created an event in the .ics format, as it is a universal event format it is compatible with most calendar programs, after that we add it to the calendar and send it via SMTP to the recipient

@@ -325,6 +325,132 @@ print(summarizedResponse.json()['choices'][0]['message']['content'])
 ```
 It´s currently moderate rain in London with a temperature of 8.0 degrees Celsius.
 ```
+
+### Example 4: `get_email_summary`
+For this example we will use gmail as an email service
+- Objective: Create a summary of your e-mails
+- Parameter: `value` (desired quantity of e-mails), `login` (your e-mail), `password` (your e-mail password)
+- Usage Example: User provides a location and receive local weather information
+
+### Request
+Firstly, you need to create a password for less secure apps by following the link: https://support.google.com/a/answer/6260879?hl=en.
+With the password created, we can make the first request to extract the email, password and number of emails that will be summarized.
+```python
+api_request_json = {
+  "model": "llama-70b-chat",
+  "messages": [
+    {"role": "user", "content": "Make a summary of my last e-mail, login: mail@mail.com and password: password"},
+  ],
+  "functions": [
+    {
+        "name": "get_email_summary",
+        "description": "Get the current value of emails",
+        "parameters": {
+            "type": "object",
+        "properties": {
+            "value": {
+                "type": "integer",
+                "description": "Quantity of emails"
+            },
+            "login": {
+                "type": "string",
+                "description": "login"
+            },
+            "password":{
+                "type": "string",
+                "description": "password"
+            }
+        },
+        "required": ["value","login","password"]
+        }
+    }
+  ],
+}
+
+response = llama.run(api_request_json)
+output = response.json()['choices'][0]['message']
+```
+### Response
+```
+{'role': 'assistant', 'content': None, 'function_call': {'name': 'get_email_summary', 'arguments': {'value': 1, 'login': 'mail@mail.com', 'password': 'password'}}}
+```
+
+So, after extracting the information, we need to access the email sent, for this it will be necessary to use a function to read and retrieve the desired emails
+
+```python
+email_information = []
+def get_emails(quantity, login, password):
+    try:
+        mail = imaplib.IMAP4_SSL("imap.gmail.com")
+        mail.login(login, password)
+
+        mail.select("inbox")
+
+        status, messages = mail.search(None, "(UNSEEN)")
+
+        email_ids = messages[0].split()[::-1]
+
+        limite = min(quantity, len(email_ids))
+
+        for i in range(limite):
+            email_id = email_ids[i]
+            _, msg_data = mail.fetch(email_id, "(RFC822)")
+            for response_part in msg_data:
+                if isinstance(response_part, tuple):
+                    email_message = email.message_from_bytes(response_part[1])
+                    subject, encoding = decode_header(email_message["Subject"])[0]
+                    if isinstance(subject, bytes):
+                        subject = subject.decode(encoding or "utf-8")
+
+                    sender = email_message.get("From")
+
+            email_information.append({"Subject": subject, "From": sender})
+                    
+
+        mail.logout()
+        return json.dumps(email_information)
+    except Exception as e:
+        print("Err:", str(e))
+```
+### Response
+```
+[{"Subject": "Llama", "From": "LlamaAPI <llama@llama.com>"}]
+```
+
+So, we send the emails to a new function that will summarize
+
+```python
+summarizedResponse = {
+  "model": "llama-70b-chat",
+  "messages": [
+    {"role": "user", "content": "Make a summary of my emails"},
+    {"role": "function", "name": output['function_call']['name'], "content": email_info}
+  ],
+  "functions": [
+    {
+        "name": "get_email_summary",
+        "description": "Make a summary of my emails",
+        "parameters": {
+            "type": "object",
+        "properties": {
+            "value": {
+                "type": "integer",
+                "description": "Quantity of emails"
+            },
+        },
+        "required": ["value"]
+        }
+    }
+],
+}
+
+summarizedResponse = llama.run(summarizedResponse)
+print(summarizedResponse.json()['choices'][0]['message']['content'])
+```
+### Response
+```
+You have 1 email with the subject "Llama" and the sender "LlamaAPI <llama@llama.com>".
+```
 ## Discord
 
 Don't forget to Join our [Discord community](https://discord.gg/sxcd9hfbkJ)!
