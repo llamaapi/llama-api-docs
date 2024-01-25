@@ -11,7 +11,7 @@ With the password created, we can make the first request to extract the email, p
 api_request_json = {
   "model": "llama-70b-chat",
   "messages": [
-    {"role": "user", "content": "Make a summary of my last e-mail, login: mail@mail.com and password: nnmy fvbx sucz gxdu"},
+    {"role": "user", "content": "Make a summary of my last e-mail, login: mail@mail.com and password: password"},
   ],
   "functions": [
     {
@@ -59,7 +59,7 @@ output = response.json()['choices'][0]['message']
 ```
 ### Response
 ```
-{'role': 'assistant', 'content': None, 'function_call': {'name': 'get_email_summary', 'arguments': {'value': 1, 'login': 'login', 'password': 'password'}}}
+{'role': 'assistant', 'content': None, 'function_call': {'name': 'get_email_summary', 'arguments': {'value': 1, 'login': 'mail@mail.com', 'password': 'password'}}}
 ```
 
 ### Processing extracted data
