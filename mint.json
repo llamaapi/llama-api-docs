@@ -3,7 +3,8 @@
   "name": "Llama API",
   "logo": {
     "dark": "/logo/dark.png",
-    "light": "/logo/light.png"
+    "light": "/logo/light.png",
+    "href": "https://llama-api.com"
   },
   "favicon": "/favicon.png",
   "colors": {
