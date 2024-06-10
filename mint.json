@@ -6,6 +6,7 @@
     "light": "/logo/light.png"
   },
   "favicon": "/favicon.png",
+  "href": "https://llama-api.com/"
   "colors": {
     "primary": "#2AB673",
     "light": "#AE87FF",
