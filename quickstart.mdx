@@ -11,23 +11,13 @@ to check the rest of our documentation to extract the full power of our API.
 The following models are currently available through LlamaAPI. You will use their names when build a request
 further on this Quickstart Guide.
 
-### Llama-3
+### Llama-3 (instruct/chat models)
 
-- `llama3-70b` (instruct model)
-- `llama3-8b` (instruct model)
+- `llama3-70b`
+- `llama3-8b`
 
-### Llama-2
-
-<Info>
-  All calls with prefix llama or llama2 migrated to Llama 3 on May/5/2024.
-
-  - `llama-7b-chat` or  are mapped to `llama3-8b`
-  - `llama-13b-chat` and `llama-70b-chat` are mapped to `llama3-70b`
-</Info>
-
-- `codellama-7b-instruct`
-- `codellama-13b-instruct`
-- `codellama-34b-instruct`
+### Qwen (instruct/chat models)
+- `Qwen2-72B`
 
 ### Mistral
 - `mixtral-8x22b-instruct`
@@ -36,11 +26,22 @@ further on this Quickstart Guide.
 - `mistral-7b` (not a chat model)
 - `mixtral-8x22b` (not a chat model)
 
-### Gemma
+### Gemma (instruct/chat models)
 - `gemma-7b`
 - `gemma-2b`
 
 ### Other
+- llama2-7b (instruct/chat models)
+- llama-7b-32k (instruct/chat models)
+- llama2-13b (instruct/chat models)
+- llama2-70b (instruct/chat models)
+
+- `codellama-7b-instruct`
+- `codellama-13b-instruct`
+- `codellama-34b-instruct`
+
+- `Qwen1.5-72B-Chat` ( replace 72B with 110B / 32B / 14B / 7B / 4B / 1.8B / 0.5B)
+
 - `alpaca-7b`
 - `vicuna-7b`
 - `vicuna-13b`
@@ -57,7 +58,7 @@ further on this Quickstart Guide.
 - `Nous-Capybara-7B-V1p9`
 - `OpenHermes-2p5-Mistral-7B`
 - `OpenHermes-2-Mistral-7B`
-- `Qwen1.5-72B-Chat` ( replace 72B with 32B / 14B / 7B / 4B / 1.8B / 0.5B)
+
 
 ## Installing the SDK
 Our SDK allows your application to interact with LlamaAPI seamlessly, abstracting the handling
