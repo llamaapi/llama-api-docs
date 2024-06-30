@@ -8,34 +8,32 @@ In this guide you will find the essential commands for interacting with LlamaAPI
 to check the rest of our documentation to extract the full power of our API.
 
 ## Available Models
-The following models are currently available through LlamaAPI. You will use their names when build a request
-further on this Quickstart Guide.
+The following models are currently available through LlamaAPI. You will use their names when building a request further on in this Quickstart Guide.
 
 ### Llama-3 (instruct/chat models)
-
-- `llama3-70b`
-- `llama3-8b`
+- `llama3-70b`: A large model suitable for complex tasks.
+- `llama3-8b`: A smaller model for less resource-intensive tasks.
 
 ### Qwen (instruct/chat models)
-- `Qwen2-72B`
-- `Qwen1.5-72B-Chat` ( replace 72B with 110B / 32B / 14B / 7B / 4B / 1.8B / 0.5B)
+- `qwen2-72b`: A powerful model for high-performance applications.
+- `qwen1.5-72b-chat`: A versatile model available in various sizes (replace 72B with 110B / 32B / 14B / 7B / 4B / 1.8B / 0.5B).
 
 ### Mistral
-- `mixtral-8x22b-instruct`
-- `mixtral-8x7b-instruct`
-- `mistral-7b-instruct`
-- `mistral-7b` (not a chat model)
-- `mixtral-8x22b` (not a chat model)
+- `mixtral-8x22b-instruct`: An instruct model for detailed guidance.
+- `mixtral-8x7b-instruct`: A smaller instruct model.
+- `mistral-7b-instruct`: A compact instruct model.
+- `mistral-7b`: A non-chat model for specific tasks.
+- `mixtral-8x22b`: A non-chat model for specific tasks.
 
 ### Gemma (instruct/chat models)
-- `gemma-7b`
-- `gemma-2b`
+- `gemma-7b`: A mid-sized model for general use.
+- `gemma-2b`: A smaller model for lightweight applications.
 
 ### Other
-- `llama2-7b` (instruct/chat models)
-- `llama-7b-32k` (instruct/chat models)
-- `llama2-13b` (instruct/chat models)
-- `llama2-70b` (instruct/chat models)
+- `llama2-7b`: An instruct/chat model for general use.
+- `llama-7b-32k`: An instruct/chat model with extended context length.
+- `llama2-13b`: A larger instruct/chat model.
+- `llama2-70b`: A high-capacity instruct/chat model.
 
 - `codellama-7b-instruct`
 - `codellama-13b-instruct`
@@ -182,7 +180,7 @@ Other parameters that you can pass in the request json are:
       "stream": false,
       "function_call": "get_current_weather",
      };
-   
+
      // Execute the Request
       llamaAPI.run(apiRequestJson)
         .then(response => {
