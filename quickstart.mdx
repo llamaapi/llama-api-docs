@@ -71,6 +71,7 @@ llama = LlamaAPI("<your_api_token>")
 
 # Build the API request
 api_request_json = {
+    "model": "llama3.1-70b",
     "messages": [
         {"role": "user", "content": "What is the weather like in Boston?"},
     ],
