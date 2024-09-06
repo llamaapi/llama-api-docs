@@ -11,7 +11,7 @@ With the password created, we can make the first request to extract the email, p
 Let's store this password in a variable, separate from the instruction for LLM
 ```python
 api_request_json = {
-  "model": "llama-70b-chat",
+  "model": "llama3.1-70b",
   "messages": [
     {"role": "user", "content": "Make a summary of my last e-mail, login: mail@mail.com"},
   ],
@@ -108,7 +108,7 @@ With the email in hand, we send it again to Llamma, this way it can be interpret
 
 ```python
 summarizedResponse = {
-  "model": "llama-70b-chat",
+  "model": "llama3.1-70b",
   "messages": [
     {"role": "user", "content": "Make a summary of my emails"},
     {"role": "function", "name": output['function_call']['name'], "content": email_info}
@@ -145,7 +145,7 @@ In this second example we will create an event on the calendar, its operation is
 
 ```python
 api_request_json = {
-  "model": "llama-70b-chat",
+  "model": "llama3.1-70b",
   "messages": [
     {"role": "user", "content": "Send a invite to mail@mail.com, from: llama@mail.com, Schedule a meeting on 01/18/2024, starting at 18 and ending at 19. With the title Sales Preview, description Meeting with marketing time to evaluate the semester"},
   ],
